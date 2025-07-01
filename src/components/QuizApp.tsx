@@ -62,15 +62,6 @@ const QuizApp = ({ questions }: { questions: QuizQuestion[]}) => {
                 <img src={import.meta.env.BASE_URL  + q.image} alt="вопрос" className="question-image" />
               </div>
           )}
-            {q.iframe && (
-                <iframe
-                    src={q.iframe}
-                    width="100%"
-                    height="600"
-                    allowFullScreen
-                    style={{ border: "none", marginBottom: "20px" }}
-                />
-            )}
 
           <AnswersList
               options={q.options}

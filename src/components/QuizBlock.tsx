@@ -12,7 +12,7 @@ export const QuizBlock = (props: Props) => {
             onClick={() => props.onClick(props.quiz.id)}
         >
             <img
-                src={props.quiz.icon}
+                src={`${import.meta.env.BASE_URL}${props.quiz.icon}`}
                 alt={props.quiz.title}
                 className="quiz-icon"
             />

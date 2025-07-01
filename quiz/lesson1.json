@@ -1,6 +1,6 @@
 {
   "title": "Тест №1",
-  "icon": "/image/icon_1.png",
+  "icon": "image/icon_1.png",
   "description": "Введение в стоматологию",
   "questions": [
     {

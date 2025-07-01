@@ -3,17 +3,6 @@
   "description": "Имплантация и хирургические шаблоны",
   "questions": [
     {
-      "question": "Посмотри на 3D-модель и выбери, какой это зуб.",
-      "iframe": "https://webview.exocad.com/?url=https://dmitriibank.github.io/quiz-dent/models/6.eoff",
-      "options": [
-        "12",
-        "14",
-        "24",
-        "26"
-      ],
-      "answer": 3
-    },
-    {
       "question": "Что представляет собой имплантат в стоматологии?",
       "options": [
         "Металлический винт, заменяющий корень зуба",

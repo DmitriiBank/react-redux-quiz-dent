@@ -4,11 +4,32 @@ export enum Paths {
     QUIZ = "/quiz",
     ERROR = "/error",
     LOGOUT = "/logout",
+    USERSCORES = "/userscores",
+    REGISTER = '/register',
+}
+export enum Roles {
+    ALL = 0,
+    AUTH = 1,
+    ADMIN = 2,
+    NO_AUTH = 3
 }
 
 export type RouteType = {
     path: Paths,
     title: string,
+    role?: Roles
+}
+
+export type LoginData = {
+    email: string,
+    password: string,
+}
+
+export type SignupData = {
+    first_name: string,
+    last_name: string,
+    email: string,
+    password: string,
 }
 
 export interface QuizQuestion {

@@ -12,20 +12,28 @@ export type RouteType = {
 }
 
 export interface QuizQuestion {
-    question: string;
-    options: string[];
+    question: MultiLangString;
+    options: {
+        ru: string[];
+        he: string[];
+    };
     answer: number;
     image?: string;
     iframe?: string;
 }
+export type MultiLangString = {
+    ru: string;
+    he: string;
+};
 
 export interface QuizData {
     id: string;
-    title: string;
-    description: string;
+    title: MultiLangString;
+    description: MultiLangString;
     icon?: string;
     questions?: QuizQuestion[];
 }
+
 
 export const quizzes = [
     {

@@ -77,14 +77,16 @@
     margin: 0;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 680px) {
     .quiz-categories {
         grid-template-columns: 1fr;
         gap: 20px;
     }
 
     .quiz-card {
+        width: 80%;
         padding: 20px;
+        margin: 0;
     }
 
     .quiz-icon {

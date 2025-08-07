@@ -12,6 +12,7 @@ import {styled} from '@mui/material/styles';
 import {GoogleIcon} from './CustomIcons.tsx';
 import {type LoginData, Paths} from "../utils/quiz-types.ts";
 import {NavLink} from "react-router-dom";
+import { loginWithGoogle } from '../firebase/firebaseAuthService';
 
 export const Card = styled(MuiCard)(({ theme }) => ({
     display: 'flex',
@@ -173,7 +174,7 @@ export default function SignIn(props: Props) {
                     <Button
                         fullWidth
                         variant="outlined"
-                        onClick={() => props.submitFn({email:"GOOGLE", password:""})}
+                        onClick={loginWithGoogle}
                         startIcon={<GoogleIcon/>}
                     >
                         Sign in with Google

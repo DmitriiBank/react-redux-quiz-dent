@@ -18,7 +18,7 @@ const loginWithEmail = async (data: LoginData) => {
     };
 }
 
-const loginWithGoogle = async () => {
+export const loginWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
     const result = await signInWithPopup(auth, provider);
     const user = result.user;

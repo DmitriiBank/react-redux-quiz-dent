@@ -15,7 +15,7 @@ const Login = () => {
             dispatch(login());
             navigate("/");
         } else {
-            setError("Неверный логин или пароль");
+            setError("Incorrect login or password");
         }
     };
 

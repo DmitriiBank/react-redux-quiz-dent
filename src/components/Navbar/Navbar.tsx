@@ -7,20 +7,31 @@ import {useAppSelector} from "../../redux/hooks.ts";
 
 export const Navbar = () => {
     const {authUser, displayName} = useAppSelector(state => state.auth);
-
+    console.log(authUser, displayName)
 
     return (
         <div className={"navbar"}>
+            <LangSwitcher />
             {authUser && (
-                <Box sx={{ display: "flex", alignItems: "center", ml: "auto", mr: "15px"}}>
+                <Box
+                    sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        ml: "auto",
+                        mr: "15px"
+                    }}
+                >
                     <Avatar sx={{m: "5px"}}>{(displayName || authUser)?.[0]?.toUpperCase()}</Avatar>
-                    <Typography variant="subtitle1" sx={{ color: "black" }}>
+                    <Typography
+                        variant="subtitle1"
+                        sx={{color: "black", mr: 3}}
+                    >
                         {displayName || authUser}
                     </Typography>
+                    <Logout />
                 </Box>
             )}
-            <Logout/>
-           <LangSwitcher/>
+
         </div>
     );
 };

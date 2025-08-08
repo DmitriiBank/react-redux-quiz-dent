@@ -12,7 +12,7 @@ import {styled} from '@mui/material/styles';
 import {GoogleIcon} from './CustomIcons.tsx';
 import {type LoginData, Paths} from "../utils/quiz-types.ts";
 import {NavLink} from "react-router-dom";
-import { loginWithGoogle } from '../firebase/firebaseAuthService';
+//import { loginWithGoogle } from '../firebase/firebaseAuthService';
 
 export const Card = styled(MuiCard)(({ theme }) => ({
     display: 'flex',
@@ -71,6 +71,10 @@ export default function SignIn(props: Props) {
         if (emailError || passwordError) {
             return;
         }
+        if (!validateInputs()) {
+            return;
+        }
+
         const data = new FormData(event.currentTarget);
         props.submitFn({
             email: data.get('email') as string,
@@ -174,7 +178,7 @@ export default function SignIn(props: Props) {
                     <Button
                         fullWidth
                         variant="outlined"
-                        onClick={loginWithGoogle}
+                        onClick={() => props.submitFn({email:"GOOGLE", password:""})}
                         startIcon={<GoogleIcon/>}
                     >
                         Sign in with Google

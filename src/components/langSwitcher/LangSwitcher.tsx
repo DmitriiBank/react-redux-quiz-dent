@@ -9,10 +9,10 @@ export const LangSwitcher = () => {
 
     return (
         <div className="lang-switch">
-            <button onClick={() => dispatch(setLanguage('ru'))} disabled={lang === 'ru'}>
+            <button style={{width: 100, margin: 4}} onClick={() => dispatch(setLanguage('ru'))} disabled={lang === 'ru'}>
                 Русский
             </button>
-            <button onClick={() => dispatch(setLanguage('he'))} disabled={lang === 'he'}>
+            <button style={{width: 100}} onClick={() => dispatch(setLanguage('he'))} disabled={lang === 'he'}>
                 עברית
             </button>
         </div>

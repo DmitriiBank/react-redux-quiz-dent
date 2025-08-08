@@ -3,9 +3,20 @@ import { useAppSelector } from "./hooks";
 
 
 const PrivateRoute = () => {
-    const isAuthenticated = useAppSelector((state) => state.auth.authUser);
-
-    return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
+    const {authUser, isLoading} = useAppSelector((state) => state.auth);
+    if (isLoading) {
+        return (
+            <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '100vh'
+            }}>
+                <div>Loading...</div>
+            </div>
+        );
+    }
+    return authUser ? <Outlet /> : <Navigate to="/login" replace />;
 };
 
 export default PrivateRoute;

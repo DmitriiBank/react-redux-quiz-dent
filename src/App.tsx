@@ -1,25 +1,41 @@
 import './App.css';
 import './index.css';
 import { Route, Routes} from "react-router-dom";
-//import QuizSelectionPage from "./components/QuizSelectionPage.tsx";
-// import Login from "./servicePages/Login.tsx";
 import ErrorPage from "./servicePages/ErrorPage.tsx";
 import {Paths} from "./utils/quiz-types.ts";
-// import PrivateRoute from "./redux/PrivateRoute.tsx";
 import Logout from "./servicePages/Logout.tsx";
 import QuizSelectionPage_lang from "./components/QuizSelectionPage_lang.tsx";
-// import {useSelector} from "react-redux";
-// import type {RootState} from "./redux/store.ts";
 import QuizPage_lang from "./components/QuizPage_lang.tsx";
-import {useAppSelector} from "./redux/hooks.ts";
+import {useAppDispatch, useAppSelector} from "./redux/hooks.ts";
 import Login from "./servicePages/Login.tsx";
 import PrivateRoute from "./redux/PrivateRoute.tsx";
 import Registration from "./servicePages/Registration.tsx";
+import {useEffect} from "react";
+import {loginAction, logout} from "./redux/slices/authSlice.ts";
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from './configurations/firebase-config.ts';
+
 
 function App() {
     const lang = useAppSelector(state => state.lang.language);
-    // const {authUser} = useAppSelector(state => state.auth);
-    // const dispatch = useAppDispatch()
+    //const {authUser} = useAppSelector(state => state.auth);
+    const dispatch = useAppDispatch()
+
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                dispatch(loginAction({
+                    email: user.email,
+                    displayName: user.displayName
+                }));
+            } else {
+                dispatch(logout());
+            }
+        });
+
+        // Отписаться при размонтировании компонента
+        return () => unsubscribe();
+    }, [dispatch]);
 
     return (
         <div className={'app'}>

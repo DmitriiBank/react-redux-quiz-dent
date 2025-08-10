@@ -1,38 +1,54 @@
-import {createSlice} from '@reduxjs/toolkit';
+import {createSlice, type PayloadAction} from '@reduxjs/toolkit';
+import type {TestRecord} from "../../utils/User.ts";
 
 export interface AuthState {
-    authUser: string;
-    displayName: string;
+    uid: string | null;
+    email: string | null;
+    displayName: string | null;
+    isAuth: boolean;
     isLoading: boolean;
+    testList: TestRecord[];
 }
 
 const initialState: AuthState = {
-    authUser: "",
-    displayName: "",
-    isLoading: true,
+    uid: null,
+    email: null,
+    displayName: null,
+    isAuth: false,
+    isLoading: false,
+    testList: []
 };
 
 const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        loginAction: (state, action) => {
-            state.authUser = action.payload.email;
-            state.displayName = action.payload.displayName;
-            state.isLoading = false;
+        loginAction: (state, {payload}: PayloadAction<{
+            uid: string;
+            email: string | null;
+            displayName: string | null;
+            testList: TestRecord[];
+            isAuth?: boolean;
+            isLoading?: boolean;
+        }>) => {
+            state.uid = payload.uid;
+            state.email = payload.email;
+            state.displayName = payload.displayName;
+            state.isAuth = payload.isAuth ?? true;
+            state.testList = payload.testList || [];
+            state.isLoading = payload.isLoading ?? false;
         },
-        logout: (state) => {
-            state.authUser = "";
-            state.displayName = "";
-            state.isLoading = false;
-        },
-        setAuthLoading: (state, action) => {
-            state.isLoading = action.payload;
+        logout: (state) => Object.assign(state, initialState),
+        setLoading: (state, {payload}: PayloadAction<boolean>) => {
+            state.isLoading = payload;
         }
-    },
+    }
 });
 
+export const {
+    loginAction,
+    logout,
+    setLoading
+} = authSlice.actions;
 
-
-export const { loginAction, logout , setAuthLoading} = authSlice.actions;
 export default authSlice.reducer;

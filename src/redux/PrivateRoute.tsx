@@ -3,7 +3,7 @@ import { useAppSelector } from "./hooks";
 
 
 const PrivateRoute = () => {
-    const {authUser, isLoading} = useAppSelector((state) => state.auth);
+    const {email, isLoading} = useAppSelector((state) => state.auth);
     if (isLoading) {
         return (
             <div style={{
@@ -16,7 +16,7 @@ const PrivateRoute = () => {
             </div>
         );
     }
-    return authUser ? <Outlet /> : <Navigate to="/login" replace />;
+    return email ? <Outlet /> : <Navigate to="/login" replace />;
 };
 
 export default PrivateRoute;

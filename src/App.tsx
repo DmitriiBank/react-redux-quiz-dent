@@ -6,7 +6,7 @@ import {Paths} from "./utils/quiz-types.ts";
 import Logout from "./servicePages/Logout.tsx";
 import QuizSelectionPage_lang from "./components/QuizSelectionPage_lang.tsx";
 import QuizPage_lang from "./components/QuizPage_lang.tsx";
-import {useAppDispatch, useAppSelector} from "./redux/hooks.ts";
+import {useAppDispatch} from "./redux/hooks.ts";
 import Login from "./servicePages/Login.tsx";
 import PrivateRoute from "./redux/PrivateRoute.tsx";
 import Registration from "./servicePages/Registration.tsx";
@@ -17,7 +17,6 @@ import { auth } from './configurations/firebase-config.ts';
 
 
 function App() {
-    const lang = useAppSelector(state => state.lang.language);
     //const {authUser} = useAppSelector(state => state.auth);
     const dispatch = useAppDispatch()
 
@@ -25,8 +24,12 @@ function App() {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
                 dispatch(loginAction({
+                    uid: user.uid,
                     email: user.email,
-                    displayName: user.displayName
+                    displayName: user.displayName,
+                    testList: [],
+                    isLoading: false,
+                    isAuth: true
                 }));
             } else {
                 dispatch(logout());
@@ -42,12 +45,12 @@ function App() {
             <Routes>
                 <Route
                     path={Paths.HOME}
-                    element={<QuizSelectionPage_lang lang={lang} />}
+                    element={<QuizSelectionPage_lang />}
                 />
                 <Route element={<PrivateRoute />}>
                     <Route
                         path={`${Paths.QUIZ}/:quizId`}
-                        element={<QuizPage_lang lang={lang} />}
+                        element={<QuizPage_lang />}
                     />
                 </Route>
 

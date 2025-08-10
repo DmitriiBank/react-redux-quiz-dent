@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-//import QuizApp from './QuizApp';
 import type { QuizData } from '../utils/quiz-types.ts';
 import QuizAppLang from "./QuizApp_lang";
 import '../styles/style.css';
+import {useSelector} from "react-redux";
+import type {RootState} from "../redux/store.ts";
 
 
-const QuizPageLang = ({lang}: { lang: 'ru' | 'he' }) => {
+const QuizPageLang = () => {
+    const lang = useSelector((state: RootState) => state.lang.language);
     const { quizId } = useParams();
     const [quiz, setQuiz] = useState<QuizData | null>(null);
     const [loading, setLoading] = useState(true);
@@ -34,7 +36,7 @@ const QuizPageLang = ({lang}: { lang: 'ru' | 'he' }) => {
     return (
         <div className="quiz-page">
             <h2>{quiz.title[lang]}: {quiz.description[lang]}</h2>
-            <QuizAppLang questions={quiz.questions ?? []} lang={lang}/>
+            <QuizAppLang questions={quiz.questions ?? []}/>
 
         </div>
     );

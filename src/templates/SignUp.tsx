@@ -10,11 +10,11 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import {Paths, type SignupData} from "../utils/quiz-types.ts";
 import {Card, SignInContainer} from "./SignIn.tsx";
-import {NavLink} from "react-router-dom";
+import {NavLink, useNavigate} from "react-router-dom";
 
 
 type Props = {
-    submitFunc:(data:SignupData) => void
+    submitFunc: (data: SignupData) => void
 }
 
 export default function SignUpForm(props: Props) {
@@ -24,6 +24,7 @@ export default function SignUpForm(props: Props) {
     const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
     const [nameError, setNameError] = React.useState(false);
     const [nameErrorMessage, setNameErrorMessage] = React.useState('');
+    const navigate = useNavigate()
 
     const validateInputs = () => {
         const email = document.getElementById('email') as HTMLInputElement;
@@ -77,19 +78,22 @@ export default function SignUpForm(props: Props) {
     };
 
     return (
-        <SignInContainer direction="column" justifyContent="space-between">
+        <SignInContainer
+            direction="column"
+            justifyContent="space-between"
+        >
             <Card variant="outlined">
                 <Typography
                     component="h1"
                     variant="h4"
-                    sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
+                    sx={{width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)'}}
                 >
                     Sign up
                 </Typography>
                 <Box
                     component="form"
                     onSubmit={handleSubmit}
-                    sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}
+                    sx={{display: 'flex', flexDirection: 'column', gap: 2}}
                 >
                     <FormControl>
                         <FormLabel htmlFor="name">First name</FormLabel>
@@ -151,24 +155,31 @@ export default function SignUpForm(props: Props) {
                         />
                     </FormControl>
                     <FormControlLabel
-                        control={<Checkbox value="allowExtraEmails" color="primary" />}
+                        control={<Checkbox
+                            value="allowExtraEmails"
+                            color="primary"
+                        />}
                         label="I want to receive updates via email."
                     />
                     <Button
                         type="submit"
                         fullWidth
                         variant="contained"
-                        onClick={validateInputs}
+                        onClick={() => {
+                            if (validateInputs()) {
+                                navigate("/");
+                            }
+                        }}
                     >
                         Sign up
                     </Button>
                 </Box>
                 <Divider>
-                    <Typography sx={{ color: 'text.secondary' }}>or</Typography>
+                    <Typography sx={{color: 'text.secondary'}}>or</Typography>
                 </Divider>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <Box sx={{display: 'flex', flexDirection: 'column', gap: 2}}>
 
-                    <Typography sx={{ textAlign: 'center' }}>
+                    <Typography sx={{textAlign: 'center'}}>
                         Already have an account?{' '}
                         <NavLink
                             to={Paths.LOGIN}

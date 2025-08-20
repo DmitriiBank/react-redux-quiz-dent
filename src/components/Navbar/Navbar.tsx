@@ -6,18 +6,21 @@ import Typography from "@mui/material/Typography";
 import {useAppSelector} from "../../redux/hooks.ts";
 import Button from "@mui/material/Button";
 import {useNavigate} from "react-router-dom";
+import type {RootState} from "../../redux/store.ts";
 
 export const Navbar = () => {
     const {email, displayName} = useAppSelector(state => state.auth);
     console.log(email, displayName)
     const navigate = useNavigate()
+    const lang = useAppSelector((state: RootState) => state.lang.language);
+
     return (
         <div className={"navbar"}>
             <Button
                 sx={{mr: "auto"}}
                 onClick={() => navigate('/')}
             >
-                На главную
+                {lang === 'ru' ? 'На главную' : 'לעמוד הראשי'}
             </Button>
             <LangSwitcher />
             {email && (

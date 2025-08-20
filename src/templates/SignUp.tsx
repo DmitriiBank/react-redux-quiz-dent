@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useState} from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
@@ -11,77 +12,104 @@ import Typography from '@mui/material/Typography';
 import {Paths, type SignupData} from "../utils/quiz-types.ts";
 import {Card, SignInContainer} from "./SignIn.tsx";
 import {NavLink, useNavigate} from "react-router-dom";
-
+import {useSelector} from "react-redux";
+import type {RootState} from "../redux/store.ts";
+import {ERROR_DICT} from "../utils/error-types.ts";
 
 type Props = {
-    submitFunc: (data: SignupData) => void
+    submitFunc: (data: SignupData) => Promise<void> | void;
+    serverErrorKey?: string | null;
+};
+
+function tErr(key: string | null | undefined, lang: 'ru' | 'he') {
+    const k = (key && (key in ERROR_DICT) ? key : 'default') as keyof typeof ERROR_DICT;
+    return ERROR_DICT[k][lang];
 }
 
-export default function SignUpForm(props: Props) {
-    const [emailError, setEmailError] = React.useState(false);
-    const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
-    const [passwordError, setPasswordError] = React.useState(false);
-    const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
-    const [nameError, setNameError] = React.useState(false);
-    const [nameErrorMessage, setNameErrorMessage] = React.useState('');
-    const navigate = useNavigate()
+export default function SignUpForm({submitFunc, serverErrorKey}: Props) {
+    const lang = useSelector((state: RootState) => state.lang.language);
 
-    const validateInputs = () => {
-        const email = document.getElementById('email') as HTMLInputElement;
-        const password = document.getElementById('password') as HTMLInputElement;
-        const name = document.getElementById('name') as HTMLInputElement;
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
 
-        let isValid = true;
+    const [firstNameErr, setFirstNameErr] = useState<string>('');
+    const [lastNameErr, setLastNameErr] = useState<string>('');
+    const [emailErr, setEmailErr] = useState<string>('');
+    const [passwordErr, setPasswordErr] = useState<string>('');
 
-        if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
-            setEmailError(true);
-            setEmailErrorMessage('Please enter a valid email address.');
-            isValid = false;
-        } else {
-            setEmailError(false);
-            setEmailErrorMessage('');
-        }
 
-        if (!password.value || password.value.length < 6) {
-            setPasswordError(true);
-            setPasswordErrorMessage('Password must be at least 6 characters long.');
-            isValid = false;
-        } else {
-            setPasswordError(false);
-            setPasswordErrorMessage('');
-        }
+    const [submitting, setSubmitting] = useState(false);
 
-        if (!name.value || name.value.length < 1) {
-            setNameError(true);
-            setNameErrorMessage('Name is required.');
-            isValid = false;
-        } else {
-            setNameError(false);
-            setNameErrorMessage('');
-        }
+    const navigate = useNavigate();
 
-        return isValid;
+    const validate = () => {
+        let ok = true;
+
+        // First name
+        if (!firstName.trim()) {
+            setFirstNameErr('First name is required.');
+            ok = false;
+        } else setFirstNameErr('');
+
+        // Last name
+        if (!lastName.trim()) {
+            setLastNameErr('Last name is required.');
+            ok = false;
+        } else setLastNameErr('');
+
+        // Email
+        if (!email.trim() || !/\S+@\S+\.\S+/.test(email)) {
+            setEmailErr('Please enter a valid email address.');
+            ok = false;
+        } else setEmailErr('');
+
+        // Password
+        if (!password || password.length < 6) {
+            setPasswordErr('Password must be at least 6 characters long.');
+            ok = false;
+        } else setPasswordErr('');
+
+        return ok;
     };
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        if (nameError || emailError || passwordError) {
-            return;
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (!validate()) return;
+
+        setSubmitting(true);
+        try {
+            await submitFunc({
+                first_name: firstName.trim(),
+                last_name: lastName.trim(),
+                email: email.trim(),
+                password
+            });
+
+            navigate(Paths.HOME ?? '/');
+        } finally {
+            setSubmitting(false);
         }
-        const data = new FormData(event.currentTarget);
-        props.submitFunc({
-            first_name: data.get('first_name') as string,
-            last_name: data.get('last_name') as string,
-            email: data.get('email') as string,
-            password: data.get('password') as string,
-        });
     };
+
+    const serverErrorText = serverErrorKey ? tErr(serverErrorKey, lang) : '';
+
 
     return (
         <SignInContainer
             direction="column"
             justifyContent="space-between"
         >
+            {serverErrorText && (
+                <Typography
+                    color="error"
+                    role="alert"
+                    sx={{mt: 1}}
+                >
+                    {serverErrorText}
+                </Typography>
+            )}
             <Card variant="outlined">
                 <Typography
                     component="h1"
@@ -90,70 +118,84 @@ export default function SignUpForm(props: Props) {
                 >
                     Sign up
                 </Typography>
+
+
                 <Box
                     component="form"
                     onSubmit={handleSubmit}
                     sx={{display: 'flex', flexDirection: 'column', gap: 2}}
                 >
                     <FormControl>
-                        <FormLabel htmlFor="name">First name</FormLabel>
+                        <FormLabel htmlFor="first_name">First name</FormLabel>
                         <TextField
-                            autoComplete="first_name"
-                            name="first_name"
-                            required
-                            fullWidth
                             id="first_name"
-                            placeholder="Jon"
-                            error={nameError}
-                            helperText={nameErrorMessage}
-                            color={nameError ? 'error' : 'primary'}
-                        />
-                    </FormControl>
-                    <FormControl>
-                        <FormLabel htmlFor="name">Last name</FormLabel>
-                        <TextField
-                            autoComplete="last_name"
-                            name="last_name"
+                            name="first_name"
+                            autoComplete="given-name"
                             required
                             fullWidth
-                            id="last_name"
-                            placeholder="Snow"
-                            error={nameError}
-                            helperText={nameErrorMessage}
-                            color={nameError ? 'error' : 'primary'}
+                            placeholder="Jon"
+                            value={firstName}
+                            onChange={(e) => setFirstName(e.target.value)}
+                            error={!!firstNameErr}
+                            helperText={firstNameErr}
+                            color={firstNameErr ? 'error' : 'primary'}
                         />
                     </FormControl>
+
+                    <FormControl>
+                        <FormLabel htmlFor="last_name">Last name</FormLabel>
+                        <TextField
+                            id="last_name"
+                            name="last_name"
+                            autoComplete="family-name"
+                            required
+                            fullWidth
+                            placeholder="Snow"
+                            value={lastName}
+                            onChange={(e) => setLastName(e.target.value)}
+                            error={!!lastNameErr}
+                            helperText={lastNameErr}
+                            color={lastNameErr ? 'error' : 'primary'}
+                        />
+                    </FormControl>
+
                     <FormControl>
                         <FormLabel htmlFor="email">Email</FormLabel>
                         <TextField
+                            id="email"
+                            name="email"
+                            type="email"
+                            autoComplete="email"
                             required
                             fullWidth
-                            id="email"
                             placeholder="your@email.com"
-                            name="email"
-                            autoComplete="email"
-                            variant="outlined"
-                            error={emailError}
-                            helperText={emailErrorMessage}
-                            color={passwordError ? 'error' : 'primary'}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            error={!!emailErr}
+                            helperText={emailErr}
+                            color={emailErr ? 'error' : 'primary'}
                         />
                     </FormControl>
+
                     <FormControl>
                         <FormLabel htmlFor="password">Password</FormLabel>
                         <TextField
+                            id="password"
+                            name="password"
+                            type="password"
+                            autoComplete="new-password"
                             required
                             fullWidth
-                            name="password"
                             placeholder="••••••"
-                            type="password"
-                            id="password"
-                            autoComplete="new-password"
-                            variant="outlined"
-                            error={passwordError}
-                            helperText={passwordErrorMessage}
-                            color={passwordError ? 'error' : 'primary'}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            error={!!passwordErr}
+                            helperText={passwordErr}
+
+                            color={passwordErr ? 'error' : 'primary'}
                         />
                     </FormControl>
+
                     <FormControlLabel
                         control={<Checkbox
                             value="allowExtraEmails"
@@ -161,34 +203,27 @@ export default function SignUpForm(props: Props) {
                         />}
                         label="I want to receive updates via email."
                     />
+
                     <Button
                         type="submit"
                         fullWidth
                         variant="contained"
-                        onClick={() => {
-                            if (validateInputs()) {
-                                navigate("/");
-                            }
-                        }}
+                        disabled={submitting}
                     >
-                        Sign up
+                        {submitting ? 'Signing up…' : 'Sign up'}
                     </Button>
                 </Box>
-                <Divider>
-                    <Typography sx={{color: 'text.secondary'}}>or</Typography>
-                </Divider>
-                <Box sx={{display: 'flex', flexDirection: 'column', gap: 2}}>
 
+                <Divider><Typography sx={{color: 'text.secondary'}}>or</Typography></Divider>
+
+                <Box sx={{display: 'flex', flexDirection: 'column', gap: 2}}>
                     <Typography sx={{textAlign: 'center'}}>
                         Already have an account?{' '}
-                        <NavLink
-                            to={Paths.LOGIN}
-                        >
-                            Sign in
-                        </NavLink>
+                        <NavLink to={Paths.LOGIN}>Sign in</NavLink>
                     </Typography>
                 </Box>
             </Card>
+
         </SignInContainer>
     );
 }

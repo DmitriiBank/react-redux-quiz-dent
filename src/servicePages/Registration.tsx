@@ -6,15 +6,17 @@ import {useDispatch} from "react-redux";
 import {loginAction} from "../redux/slices/authSlice.ts";
 import {useState} from "react";
 import type {UserDto} from "../utils/User.ts";
+import {FirebaseError} from 'firebase/app';
 
 const Registration = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const [error, setError] = useState('');
+    const [errorCode, setErrorCode] = useState<string | null>(null);
+
 
     const handleRegister = async (data: UserDto) => {
         try {
-            setError('');
+            setErrorCode(null);
             const result = await registerWithEmailAndPassword(data);
             console.log('Результат регистрации:', result);
 
@@ -32,20 +34,19 @@ const Registration = () => {
                 console.log('Redux action dispatched with uid:', result.uid);
                 navigate(Paths.HOME);
             }
-        } catch (error) {
-            console.error('Registration error:', error);
-            if (error instanceof Error) {
-                setError(error.message);
-            } else {
-                setError('Registration failed');
+        } catch (err) {
+            console.error('Registration error:', err);
+            if (err instanceof FirebaseError) {
+                setErrorCode(err.code);
+            }  else {
+                setErrorCode('default');
             }
+            throw err;
         }
-    };
-
+    }
     return (
         <div>
-            {error && <div style={{ color: 'red' }}>{error}</div>}
-            <SignUp submitFunc={handleRegister}/>
+            <SignUp submitFunc={handleRegister} serverErrorKey={errorCode} />
         </div>
     );
 };

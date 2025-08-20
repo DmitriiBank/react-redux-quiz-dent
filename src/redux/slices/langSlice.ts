@@ -15,11 +15,8 @@ const langSlice = createSlice({
         setLanguage(state, action: PayloadAction<'ru' | 'he'>) {
             state.language = action.payload;
         },
-        toggleLanguage(state) {
-            state.language = state.language === 'ru' ? 'he' : 'ru';
-        },
     },
 });
 
-export const { setLanguage, toggleLanguage } = langSlice.actions;
+export const { setLanguage } = langSlice.actions;
 export default langSlice.reducer;

@@ -18,8 +18,7 @@ export const ScorePageLang = ({ questions, score, answers, onClick}: Props) => {
         lang === 'ru'
             ? `Вы ответили правильно на ${score} из ${questions.length} вопросов.`
             : `ענית נכון על ${score} מתוך ${questions.length} שאלות.`;
-    // const button = lang === 'ru' ? 'Пройти ещё раз' : 'נסה שוב';
-    const button = lang === 'ru' ? 'Вернуться к выбору теста' : 'חזרה לבחירת המבחן';
+     const button = lang === 'ru' ? 'Вернуться к выбору теста' : 'חזרה לבחירת המבחן';
     return (
         <div className="results-container">
             <h2 className="results-title">{title}</h2>

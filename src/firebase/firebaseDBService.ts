@@ -13,7 +13,6 @@ export const createUserInDb = async (userDto: SignupData) => {
     console.log('📝 Данные:', userDto);
 
     try {
-        // Используем UID из Firebase Auth, а не генерируем новый
         const currentUser = auth.currentUser;
         if (!currentUser) {
             throw new Error('Пользователь не аутентифицирован');
@@ -22,10 +21,10 @@ export const createUserInDb = async (userDto: SignupData) => {
         const displayName = `${userDto.first_name} ${userDto.last_name}`.trim();
 
         const newUser = {
-            uid: currentUser.uid, // Используем реальный UID
+            uid: currentUser.uid,
             displayName,
             email: userDto.email,
-            testList: [] // Исправлено: было tests, должно быть testList
+            testList: []
         };
 
         console.log('📤 Сохраняем данные:', newUser);
@@ -34,7 +33,6 @@ export const createUserInDb = async (userDto: SignupData) => {
         await setDoc(doc(db, "users", newUser.uid), newUser);
         console.log('✅ Пользователь успешно создан в Firestore!');
 
-        // Проверяем сохранение
         const savedDoc = await getDoc(doc(db, "users", newUser.uid));
         if (savedDoc.exists()) {
             console.log('✅ Подтверждение: данные сохранены');
@@ -68,10 +66,9 @@ export const saveTestResult = async (
         const scoreString = `${score}/${totalQuestions}`;
         const userRef = doc(db, "users", uid);
 
-        // Создаем новый тест-рекорд
         const newTestRecord: TestRecord = {
             idTest,
-            title: getTestTitle(idTest), // Функция для получения названия
+            title: getTestTitle(idTest),
             score: scoreString,
             completed: true
         };
@@ -82,14 +79,11 @@ export const saveTestResult = async (
             const userData = userSnap.data();
             const updatedTests = userData.testList || [];
 
-            // Проверяем, есть ли уже такой тест
             const existingTestIndex = updatedTests.findIndex((test: TestRecord) => test.idTest === idTest);
 
             if (existingTestIndex >= 0) {
-                // Обновляем существующий тест
                 updatedTests[existingTestIndex] = newTestRecord;
             } else {
-                // Добавляем новый тест
                 updatedTests.push(newTestRecord);
             }
 
@@ -123,10 +117,9 @@ const getTestTitle = (testId: string): string => {
 
 export const canTakeTest = async (uid: string, testId: string): Promise<boolean> => {
     try {
-        // Проверяем, что uid не пустой
         if (!uid || !testId) {
             console.warn('canTakeTest: отсутствует uid или testId');
-            return true; // Разрешаем прохождение если нет данных
+            return true;
         }
 
         const userRef = doc(db, "users", uid);
@@ -138,10 +131,10 @@ export const canTakeTest = async (uid: string, testId: string): Promise<boolean>
             return test ? !test.completed : true; // Если тест найден, проверяем completed, иначе разрешаем
         }
 
-        return true; // Если пользователь не найден, разрешаем прохождение
+        return true;
     } catch (error) {
         console.error('Ошибка при проверке доступности теста:', error);
-        return true; // В случае ошибки разрешаем прохождение
+        return true;
     }
 };
 

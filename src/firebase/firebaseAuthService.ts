@@ -64,7 +64,6 @@ export const registerWithEmailAndPassword = async (dto: SignupData) => {
     console.log('🚀 Начинаем регистрацию пользователя:', dto);
 
     try {
-        // 1. Создаем пользователя в Firebase Auth
         const result = await createUserWithEmailAndPassword(auth, dto.email, dto.password);
         const displayName = `${dto.first_name} ${dto.last_name}`.trim();
 
@@ -75,11 +74,9 @@ export const registerWithEmailAndPassword = async (dto: SignupData) => {
         const user = result.user;
         console.log('✅ Пользователь создан в Firebase Auth:', user.uid);
 
-        // 2. Создаем запись в Firestore
         await createUserInDb(dto);
         console.log('✅ Запись пользователя создана в Firestore');
 
-        // 3. Получаем созданные данные для подтверждения
         const userData = await getUserData(user.uid);
 
         return Promise.resolve({

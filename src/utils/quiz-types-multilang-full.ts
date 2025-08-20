@@ -95,4 +95,16 @@ export const quizzesLang = [
     },
     icon: "image/icon_8.png",
   },
+  {
+    id: "lesson-test",
+    title: {
+      ru: "Лекция",
+      he: "הרצאה ",
+    },
+    description: {
+      ru: "Тест",
+      he: "",
+    },
+    icon: "image/icon_1.png",
+  },
 ];

@@ -1,6 +1,6 @@
 import type {QuizData} from "../utils/quiz-types.ts";
-import {useSelector} from "react-redux";
 import type {RootState} from "../redux/store.ts";
+import {useAppSelector} from "../redux/hooks.ts";
 
 type Props = {
     quiz: QuizData,
@@ -10,7 +10,7 @@ type Props = {
 }
 
 export const QuizBlockLang = ({ quiz, onClick, isCompleted, score }: Props) => {
-    const lang = useSelector((state: RootState) => state.lang.language);
+    const lang = useAppSelector((state: RootState) => state.lang.language);
 
     return (
         <div
@@ -32,7 +32,7 @@ export const QuizBlockLang = ({ quiz, onClick, isCompleted, score }: Props) => {
                 {isCompleted ? (
                     <div className="completed-badge">
                         <div className="status-text">
-                            {lang === 'ru' ? '✓ Пройден' : '✓ הושלם'}
+                            {lang === 'ru' ?  '✓ Уже пройден' : 'כבר הושלם ✓'}
                         </div>
                         {score && (
                             <div className="score-text">
@@ -47,15 +47,6 @@ export const QuizBlockLang = ({ quiz, onClick, isCompleted, score }: Props) => {
                 )}
             </div>
 
-            {/* Overlay для заблокированных тестов */}
-            {isCompleted && (
-                <div className="completed-overlay">
-                    <div className="overlay-content">
-                        <span className="check-mark">✓</span>
-                        <p>{lang === 'ru' ? 'Уже пройден' : 'כבר הושלם'}</p>
-                    </div>
-                </div>
-            )}
         </div>
     );
 };

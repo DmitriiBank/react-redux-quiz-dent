@@ -19,20 +19,13 @@ const QuizSelectionPageLang = () => {
         const loadTestStatus = async () => {
             console.log('loadTestStatus вызван с uid:', uid);
 
-            // Добавляем небольшую задержку для инициализации аутентификации
-            await new Promise(resolve => setTimeout(resolve, 100));
+            // await new Promise(resolve => setTimeout(resolve, 100));
 
             setLoading(true);
 
             try {
-                // Если нет uid, все тесты доступны (гостевой режим)
                 if (!uid) {
-                    console.log('Гостевой режим - все тесты доступны');
-                    const guestStatus: Record<string, { canTake: boolean, score?: string }> = {};
-                    quizzesLang.forEach(quiz => {
-                        guestStatus[quiz.id] = { canTake: true };
-                    });
-                    setTestStatus(guestStatus);
+                    console.log('Гостевой режим - все тесты не доступны');
                     setLoading(false);
                     return;
                 }
@@ -40,7 +33,6 @@ const QuizSelectionPageLang = () => {
                 console.log('Аутентифицированный пользователь, загружаем статус тестов...');
                 const results: Record<string, { canTake: boolean, score?: string }> = {};
 
-                // Получаем данные пользователя для получения результатов
                 const userData = await getUserData(uid);
                 console.log('Данные пользователя:', userData);
 
@@ -49,7 +41,6 @@ const QuizSelectionPageLang = () => {
                         console.log(`Проверяем тест ${quiz.id} для пользователя ${uid}`);
                         const canTake = await canTakeTest(uid, quiz.id);
 
-                        // Ищем результат теста в данных пользователя
                         const testResult = userData?.testList?.find((test: TestRecord) => test.idTest === quiz.id);
 
                         results[quiz.id] = {
@@ -60,7 +51,6 @@ const QuizSelectionPageLang = () => {
                         console.log(`Тест ${quiz.id}: canTake=${canTake}, score=${testResult?.score}`);
                     } catch (error) {
                         console.error(`Ошибка при проверке теста ${quiz.id}:`, error);
-                        // В случае ошибки с конкретным тестом, разрешаем его прохождение
                         results[quiz.id] = { canTake: true };
                     }
                 }
@@ -69,7 +59,6 @@ const QuizSelectionPageLang = () => {
                 console.log('Финальный статус тестов:', results);
             } catch (error) {
                 console.error('Ошибка при загрузке статуса тестов:', error);
-                // В случае ошибки разрешаем все тесты
                 const fallbackStatus: Record<string, { canTake: boolean, score?: string }> = {};
                 quizzesLang.forEach(quiz => {
                     fallbackStatus[quiz.id] = { canTake: true };

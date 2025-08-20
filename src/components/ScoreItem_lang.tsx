@@ -1,4 +1,5 @@
 import type { QuizQuestion } from "../utils/quiz-types.ts";
+import {ImageItem} from "./ImageItem.tsx";
 
 type Props = {
     quiz: QuizQuestion;
@@ -20,15 +21,7 @@ export const ScoreItemLang = ({ quiz, answer, lang }: Props) => {
                         {statusLabel}
                     </span>
                 </div>
-                {quiz.image && (
-                    <div className="question-image-container">
-                        <img
-                            src={import.meta.env.BASE_URL + quiz.image}
-                            alt="вопрос"
-                            className="question-image"
-                        />
-                    </div>
-                )}
+                {quiz.image && <ImageItem image={quiz.image}/>}
                 <ul className="answer-options">
                     {quiz.options[lang].map((opt, idx) => (
                         <li

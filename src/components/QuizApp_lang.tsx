@@ -9,6 +9,7 @@ import {useAppSelector} from '../redux/hooks';
 import {useSelector} from "react-redux";
 import type {RootState} from "../redux/store.ts";
 import {canTakeTest, saveTestResult} from "../firebase/firebaseDBService.ts";
+import {ImageItem} from "./ImageItem.tsx";
 
 const QuizAppLang = ({questions}: {
     questions: QuizQuestion[],
@@ -34,7 +35,7 @@ const QuizAppLang = ({questions}: {
     useEffect(() => {
         const checkTestAvailability = async () => {
             if (!uid || !quizId) {
-                setCanTake(false); // Разрешаем гостям проходить тесты
+                console.log('Гостевой режим - все тесты не доступны');
                 return;
             }
 
@@ -43,7 +44,7 @@ const QuizAppLang = ({questions}: {
                 setCanTake(canTakeResult);
             } catch (error) {
                 console.error("Ошибка при проверке доступности теста:", error);
-                setCanTake(true); // В случае ошибки разрешаем прохождение
+                setCanTake(true);
             } finally {
                 setLoading(false);
             }
@@ -75,8 +76,7 @@ const QuizAppLang = ({questions}: {
                     console.log('✅ Результат теста сохранен');
                 } catch (error) {
                     console.error("❌ Ошибка при сохранении результата:", error);
-                    // Не блокируем интерфейс в случае ошибки сохранения
-                } finally {
+                     } finally {
                     setSaving(false);
                 }
             }
@@ -99,7 +99,6 @@ const QuizAppLang = ({questions}: {
         );
     }
 
-    // Если тест уже пройден (только для аутентифицированных пользователей)
     if (uid && canTake === false) {
         const completedTest = testList?.find(test => test.idTest === quizId);
         return (
@@ -107,7 +106,6 @@ const QuizAppLang = ({questions}: {
                 <div className="completed-message">
                     <h2>{lang === 'ru' ? 'Тест уже пройден!' : 'המבחן כבר הושלם!'}</h2>
                     <div className="test-info">
-                        {/*<h3>{testTitle}</h3>*/}
                         {completedTest?.score && (
                             <p className="result">
                                 {lang === 'ru' ? 'Ваш результат: ' : 'התוצאה שלך: '}
@@ -144,7 +142,6 @@ const QuizAppLang = ({questions}: {
         );
     }
 
-    // Проверка на корректность данных вопросов
     if (!questions || questions.length === 0) {
         return (
             <div className="error-container">
@@ -159,7 +156,6 @@ const QuizAppLang = ({questions}: {
 
     const q = questions[current];
 
-    // Проверка на корректность текущего вопроса
     if (!q || !q.question) {
         return (
             <div className="error-container">
@@ -174,39 +170,12 @@ const QuizAppLang = ({questions}: {
 
     return (
         <div className="quiz-container">
-            <div className="quiz-header">
-                {/*<h3>{testTitle}</h3>*/}
-                <div className="quiz-meta">
-                    <span className="question-counter">
-                        {lang === 'ru'
-                            ? `Вопрос ${current + 1} из ${questions.length}`
-                            : `שאלה ${current + 1} מתוך ${questions.length}`
-                        }
-                    </span>
-                    {uid && (
-                        <span className="attempt-info">
-                            {lang === 'ru' ? 'Попытка: 1/1' : 'ניסיון: 1/1'}
-                        </span>
-                    )}
-                </div>
-            </div>
+
             <div className="question">
                 <div className="question-text">
                     {q.question[lang]}
                 </div>
-                {q.image && (
-                    <div className="question-image-container">
-                        <img
-                            src={import.meta.env.BASE_URL + q.image}
-                            alt="question"
-                            className="question-image"
-                            onError={(e) => {
-                                console.error('Ошибка загрузки изображения:', q.image);
-                                (e.target as HTMLImageElement).style.display = 'none';
-                            }}
-                        />
-                    </div>
-                )}
+                {q.image && <ImageItem image={q.image}/>}
                 <AnswersList
                     options={q.options}
                     selected={selected}

@@ -5,7 +5,7 @@ import {getFirestore} from 'firebase/firestore'
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
+
 const firebaseConfig = {
     apiKey: "AIzaSyBU9Wysvry148VFYadGPhbpaj5PADIX62U",
     authDomain: "quiz-dent.firebaseapp.com",
@@ -16,7 +16,7 @@ const firebaseConfig = {
     measurementId: "G-YJ0GRTE9WX"
 };
 
-// Initialize Firebase
+
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);

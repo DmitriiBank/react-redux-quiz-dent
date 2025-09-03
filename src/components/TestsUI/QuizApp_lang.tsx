@@ -166,7 +166,7 @@ const QuizAppLang = ({questions}: {
     }
 
     return (
-        <div>
+        <div className={"quiz-question-container"}>
             <div className="question">
                 <div className="question-text">
                     {q.question[lang]}

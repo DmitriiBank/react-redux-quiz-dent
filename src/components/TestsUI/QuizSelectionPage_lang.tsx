@@ -9,7 +9,7 @@ import {
     getUserData
 } from "../../firebase/firebaseDBService.ts";
 import {useEffect, useState} from "react";
-//import type {TestRecord} from "../../utils/User.ts";
+import type {TestRecord} from "../../utils/User.ts";
 import {useAppSelector} from "../../redux/hooks.ts";
 import type {QuizData} from "../../utils/quiz-types.ts";
 
@@ -22,18 +22,12 @@ const QuizSelectionPageLang = () => {
     const uid = useAppSelector((state: RootState) => state.auth.uid);
     const [testStatus, setTestStatus] = useState<Record<string, {
         canTake: boolean,
-        score?: string
+        score?: string | null
     }>>({});
     // const [loading, setLoading] = useState(false);
     // const setLoading = useSelector((state: RootState) => state.auth.isLoading);
     const [quizzes, setQizzes] = useState<QuizData[]>([])
 
-    // useEffect(() => {
-    //     getQuizzes("quiz_collection").then(data => {
-    //         console.log("Все квизы:", data);
-    //         setQizzes(data)
-    //     });
-    // }, []);
 
     useEffect(() => {
         let alive = true;
@@ -53,15 +47,19 @@ const QuizSelectionPageLang = () => {
                 setTestStatus(map);
                 return;
             }
+            const testList = (userData?.testList ?? []) as TestRecord[];
 
-            const scores = new Map((userData.testList ?? []).map(t => [t.idTest, t]));
+            const scores = new Map<string, TestRecord>(testList.map(
+                (t: TestRecord) => [t.idTest, t]
+            ))
+
             const can = await Promise.all(
-                qs.map(q => canTakeTest(uid, q.id).catch(() => true))
+                qs.map((q) => canTakeTest(uid, q.id).catch(() => true))
             );
 
-            const map: Record<string, { canTake: boolean; score?: string }> = {};
+            const map: Record<string, { canTake: boolean; score?: string | null }> = {};
             qs.forEach((q, i) => {
-                map[q.id] = { canTake: can[i], score: scores.get(q.id)?.score };
+                map[q.id] = { canTake: can[i], score: scores.get(q.id)?.score ?? null};
             });
             setTestStatus(map);
         })();

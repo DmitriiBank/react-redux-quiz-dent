@@ -15,7 +15,7 @@ const initialState: AuthState = {
     email: null,
     displayName: null,
     isAuth: false,
-    isLoading: false,
+    isLoading: true,
     testList: []
 };
 
@@ -34,12 +34,18 @@ const authSlice = createSlice({
             state.uid = payload.uid;
             state.email = payload.email;
             state.displayName = payload.displayName;
-            state.isAuth = payload.isAuth ?? true;
+            state.isAuth = true;
             state.testList = payload.testList || [];
-            state.isLoading = payload.isLoading ?? false;
+            state.isLoading = false;
         },
-        logout: (state) => Object.assign(state, initialState),
-        setLoading: (state, {payload}: PayloadAction<boolean>) => {
+        logout: (state) => {
+            state.uid = null;
+            state.email = null;
+            state.displayName = null;
+            state.testList = [];
+            state.isAuth = false;
+            state.isLoading = false;
+        }, setLoading: (state, {payload}: PayloadAction<boolean>) => {
             state.isLoading = payload;
         }
     }

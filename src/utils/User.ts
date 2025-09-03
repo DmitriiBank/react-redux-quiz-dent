@@ -29,3 +29,7 @@ export const initialTests: TestRecord[] = [
     {idTest: "lesson7", title: "Лекция 7", score: null, completed: false},
     {idTest: "lesson8", title: "Лекция 8", score: null, completed: false},
 ];
+
+export const ADMIN_EMAILS = new Set([
+    "dm.skakov@gmail.com",
+]);

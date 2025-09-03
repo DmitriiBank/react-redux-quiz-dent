@@ -1,23 +1,29 @@
-import './App.css';
-import './index.css';
-import { Route, Routes} from "react-router-dom";
-import ErrorPage from "./servicePages/ErrorPage.tsx";
-import {Paths} from "./utils/quiz-types.ts";
-import Logout from "./servicePages/Logout.tsx";
-import QuizSelectionPage_lang from "./components/QuizSelectionPage_lang.tsx";
-import QuizPage_lang from "./components/QuizPage_lang.tsx";
-import {useAppDispatch} from "./redux/hooks.ts";
-import Login from "./servicePages/Login.tsx";
+// import './App.css';
+// import './index.css';
+import {Route, Routes} from "react-router-dom";
+import {useAppDispatch, useAppSelector} from "./redux/hooks.ts";
 import PrivateRoute from "./redux/PrivateRoute.tsx";
-import Registration from "./servicePages/Registration.tsx";
 import {useEffect} from "react";
 import {loginAction, logout} from "./redux/slices/authSlice.ts";
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from './configurations/firebase-config.ts';
+import {onAuthStateChanged} from 'firebase/auth';
+import {auth} from './configurations/firebase-config.ts';
+import {routes} from './configurations/routeConfig.tsx'
+import {Roles} from './utils/quiz-types';
 
+function AppShell({children}: { children: React.ReactNode }) {
+    const lang = useAppSelector(s => s.lang.language);
+
+    useEffect(() => {
+        // HTML-lang и направление письма
+        document.documentElement.lang = lang === 'he' ? 'he' : 'ru';
+        document.documentElement.dir = lang === 'he' ? 'rtl' : 'ltr';
+    }, [lang]);
+
+    return <>{children}</>;
+}
 
 function App() {
-    //const {authUser} = useAppSelector(state => state.auth);
+    const {isLoading} = useAppSelector(state => state.auth);
     const dispatch = useAppDispatch()
 
     useEffect(() => {
@@ -40,45 +46,46 @@ function App() {
         return () => unsubscribe();
     }, [dispatch]);
 
-    return (
-        <div className={'app'}>
-            <Routes>
-                <Route
-                    path={Paths.HOME}
-                    element={<QuizSelectionPage_lang />}
-                />
-                <Route element={<PrivateRoute />}>
-                    <Route
-                        path={`${Paths.QUIZ}/:quizId`}
-                        element={<QuizPage_lang />}
-                    />
-                </Route>
 
-                <Route
-                    path={Paths.LOGIN}
-                    element={<Login />}
-                />
-                <Route
-                    path={Paths.LOGOUT}
-                    element={<Logout />}
-                />
-                <Route
-                    path={Paths.REGISTER}
-                    element={<Registration />}
-                />
-                <Route
-                    path={Paths.ERROR}
-                    element={<ErrorPage />}
-                />
-                {/*<Route*/}
-                {/*    path="*"*/}
-                {/*    element={<Navigate*/}
-                {/*        to={Paths.HOME}*/}
-                {/*        replace*/}
-                {/*    />}*/}
-                {/*/>*/}
-            </Routes>
-        </div>
+    // useEffect(() => {
+    //     const token = localStorage.getItem('token');
+    //     if (token) {
+    //         // дернуть /me на бэке, чтобы получить данные юзера
+    //         fetch(`${API}/auth/me`, { headers: { Authorization: `Bearer ${token}` } })
+    //             .then(res => res.json())
+    //             .then(user => dispatch(loginAction({ ...user, isAuth: true })))
+    //             .catch(() => dispatch(logout()));
+    //     }
+    // }, [dispatch]);
+    if (isLoading) {
+        return <div className="fullscreen-loader">Загрузка...</div>;
+    }
+    return (
+        <AppShell>
+            <div className={'app'}>
+                <Routes>
+                    {routes.map(({path, element, role}) =>
+                        role === Roles.USER || role as Roles === Roles.ADMIN ? (
+                            <Route
+                                key={path}
+                                element={<PrivateRoute />}
+                            >
+                                <Route
+                                    path={path}
+                                    element={element}
+                                />
+                            </Route>
+                        ) : (
+                            <Route
+                                key={path}
+                                path={path}
+                                element={element}
+                            />
+                        )
+                    )}
+                </Routes>
+            </div>
+        </AppShell>
     );
 }
 

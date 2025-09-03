@@ -7,6 +7,7 @@ import {loginAction} from "../redux/slices/authSlice.ts";
 import {useState} from "react";
 import type {UserDto} from "../utils/User.ts";
 import {FirebaseError} from 'firebase/app';
+// import {register} from "../configurations/authApi.ts";
 
 const Registration = () => {
     const navigate = useNavigate();
@@ -18,6 +19,8 @@ const Registration = () => {
         try {
             setErrorCode(null);
             const result = await registerWithEmailAndPassword(data);
+            // const result = await register(data);
+
             console.log('Результат регистрации:', result);
 
             if (result) {

@@ -1,10 +1,14 @@
+
 .quiz-selection-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 40px 20px;
+    width: 1824px;
+    margin: 0 0 20px 0;
+    padding: 20px 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f8fb;
-    min-height: 100vh;
+    background-color: #151A21;
+    border-radius: 20px;
+    border: 2px solid #26303D;
+    /*height: auto;*/
+    display: block;
 }
 
 .selection-header {
@@ -14,7 +18,7 @@
 
 .selection-header h1 {
     font-size: 38px;
-    color: #2c3e50;
+    color: #E5E7EB;
     margin-bottom: 10px;
 }
 
@@ -26,7 +30,7 @@
 }
 
 .quiz-card {
-    background: white;
+    background: #1B212A;
     border-radius: 16px;
     width: 280px;
     margin: 20px;
@@ -38,7 +42,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    border: 2px solid transparent;
+    border: 2px solid #26303D;
 }
 
 .quiz-card:hover {
@@ -53,7 +57,7 @@
     border-radius: 50%;
     overflow: hidden;
     margin-bottom: 20px;
-    background-color: #ecf6fc;
+    background-color: #151A21;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -67,32 +71,20 @@
 
 .quiz-card h2 {
     font-size: 22px;
-    color: #2c3e50;
+    color: #E5E7EB;
     margin: 10px 0 5px;
 }
 
 .quiz-description {
     font-size: 16px;
-    color: #7f8c8d;
+    color: #94A3B8;
     margin: 0;
 }
-
-@media (max-width: 680px) {
-    .quiz-categories {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-
-    .quiz-card {
-        width: 80%;
-        padding: 20px;
-        margin: 0;
-    }
-
-    .quiz-icon {
-        width: 100px;
-        height: 100px;
-    }
+.available-badge {
+    color: #2E7D32;
+}
+.completed-badge {
+    color: #D32F2F;
 }
 
 .quiz-card, .quiz-icon, .quiz-card h2 {
@@ -115,4 +107,38 @@
 .quiz-icon {
     background: linear-gradient(135deg, #dff1fb, #ecf6fc);
     box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+.loading-ring {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border: 3px solid #ccc;
+    border-top: 3px solid #007bff; /* цвет кольца */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 680px) {
+    .quiz-categories {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .quiz-card {
+        width: 80%;
+        padding: 20px;
+        margin: 0;
+    }
+
+    .quiz-icon {
+        width: 100px;
+        height: 100px;
+    }
 }

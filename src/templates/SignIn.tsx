@@ -8,11 +8,12 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
-import {styled} from '@mui/material/styles';
-import {GoogleIcon} from './CustomIcons.tsx';
-import {type LoginData, Paths} from "../utils/quiz-types.ts";
-import {NavLink} from "react-router-dom";
-//import { loginWithGoogle } from '../firebase/firebaseAuthService';
+import InputAdornment from '@mui/material/InputAdornment';
+import { styled, alpha } from '@mui/material/styles';
+import { Mail, Lock, ArrowRight, Sparkles } from 'lucide-react';
+import { GoogleIcon } from './CustomIcons.tsx';
+import { type LoginData, Paths } from "../utils/quiz-types.ts";
+import { NavLink } from "react-router-dom";
 
 export const Card = styled(MuiCard)(({ theme }) => ({
     display: 'flex',
@@ -20,42 +21,102 @@ export const Card = styled(MuiCard)(({ theme }) => ({
     alignSelf: 'center',
     width: '100%',
     padding: theme.spacing(4),
-    gap: theme.spacing(2),
+    gap: theme.spacing(2.5),
     margin: 'auto',
-    [theme.breakpoints.up('sm')]: {
-        maxWidth: '450px',
-    },
+    borderRadius: 24,
+    backdropFilter: 'blur(10px)',
+    background:
+        theme.palette.mode === 'dark'
+            ? alpha('#0B1220', 0.6)
+            : alpha('#151A21', 0.65),
+    border: `1px solid ${
+        theme.palette.mode === 'dark'
+            ? alpha('#8AB4F8', 0.18)
+            : alpha('#1976d2', 0.25)
+    }`,
     boxShadow:
-        'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
-    ...theme.applyStyles('dark', {
-        boxShadow:
-            'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
-    }),
+        theme.palette.mode === 'dark'
+            ? '0 20px 60px rgba(0,0,0,0.45), inset 0 1px 0 rgba(21,26,33,0.04)'
+            : '0 20px 60px rgba(25,118,210,0.20), inset 0 1px 0 rgba(255,255,255,0.5)',
+    [theme.breakpoints.up('sm')]: { maxWidth: 520 },
 }));
 
-type Props = {
-    submitFn: (loginData:LoginData) => void
-}
+type Props = { submitFn: (loginData: LoginData) => void };
+
 export const SignInContainer = styled(Stack)(({ theme }) => ({
-    height: 'calc((1 - var(--template-frame-height, 0)) * 100dvh)',
-    minHeight: '100%',
+    position: 'relative',
+    minHeight: '350px',
+    minWidth: '450px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: theme.spacing(2),
-    [theme.breakpoints.up('sm')]: {
-        padding: theme.spacing(4),
-    },
+    [theme.breakpoints.up('sm')]: { padding: theme.spacing(4) },
     '&::before': {
         content: '""',
-        display: 'block',
-        position: 'absolute',
-        zIndex: -1,
+        position: 'fixed',
         inset: 0,
-        backgroundImage:
-            'radial-gradient(ellipse at 50% 50%, hsl(210, 100%, 97%), hsl(0, 0%, 100%))',
-        backgroundRepeat: 'no-repeat',
-        ...theme.applyStyles('dark', {
-            backgroundImage:
-                'radial-gradient(at 50% 50%, hsla(210, 100%, 16%, 0.5), hsl(220, 30%, 5%))',
-        }),
+        zIndex: -2,
+        background:
+            theme.palette.mode === 'dark'
+                ? 'radial-gradient(1200px 800px at 10% 10%, rgba(25,118,210,0.35), transparent 60%), radial-gradient(1000px 700px at 90% 90%, rgba(99,102,241,0.35), transparent 60%), linear-gradient(180deg,#0b1120,#0f172a)'
+                : 'radial-gradient(1200px 800px at 10% 10%, rgba(25,118,210,0.18), transparent 60%), radial-gradient(1000px 700px at 90% 90%, rgba(99,102,241,0.18), transparent 60%), linear-gradient(180deg,#eef2ff,#ffffff)',
+    },
+    '&::after': {
+        content: '""',
+        position: 'fixed',
+        inset: 0,
+        zIndex: -1,
+        background:
+            theme.palette.mode === 'dark'
+                ? 'url("data:image/svg+xml,%3Csvg width=\'24\' height=\'24\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Crect width=\'1\' height=\'1\' fill=\'%231976d21a\'/%3E%3C/svg%3E")'
+                : 'url("data:image/svg+xml,%3Csvg width=\'24\' height=\'24\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Crect width=\'1\' height=\'1\' fill=\'%231976d20d\'/%3E%3C/svg%3E")',
+        opacity: 0.6,
+    },
+}));
+
+const PrimaryButton = styled(Button)(({ theme }) => ({
+    height: 52,
+    borderRadius: 14,
+    fontWeight: 800,
+    textTransform: 'none',
+    letterSpacing: 0.2,
+    backgroundImage:
+        theme.palette.mode === 'dark'
+            ? 'linear-gradient(135deg,#1976d2 0%,#7c4dff 100%)'
+            : 'linear-gradient(135deg,#1976d2 0%,#6ea8fe 100%)',
+    boxShadow:
+        theme.palette.mode === 'dark'
+            ? '0 10px 30px rgba(25,118,210,0.35)'
+            : '0 10px 24px rgba(25,118,210,0.25)',
+    '&:hover': {
+        transform: 'translateY(-1px)',
+        boxShadow:
+            theme.palette.mode === 'dark'
+                ? '0 16px 36px rgba(25,118,210,0.45)'
+                : '0 16px 30px rgba(25,118,210,0.35)',
+    },
+    transition: 'all .18s ease',
+}));
+
+const OutlineButton = styled(Button)(({ theme }) => ({
+    height: 48,
+    borderRadius: 14,
+    textTransform: 'none',
+    fontWeight: 700,
+    borderColor:
+        theme.palette.mode === 'dark'
+            ? alpha('#8AB4F8', 0.35)
+            : alpha('#1976d2', 0.4),
+    '&:hover': {
+        borderColor:
+            theme.palette.mode === 'dark'
+                ? alpha('#8AB4F8', 0.55)
+                : alpha('#1976d2', 0.7),
+        backgroundColor:
+            theme.palette.mode === 'dark'
+                ? alpha('#1976d2', 0.08)
+                : alpha('#1976d2', 0.06),
     },
 }));
 
@@ -65,16 +126,10 @@ export default function SignIn(props: Props) {
     const [passwordError, setPasswordError] = React.useState(false);
     const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
 
-
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        if (emailError || passwordError) {
-            return;
-        }
-        if (!validateInputs()) {
-            return;
-        }
-
+        if (emailError || passwordError) return;
+        if (!validateInputs()) return;
         const data = new FormData(event.currentTarget);
         props.submitFn({
             email: data.get('email') as string,
@@ -85,7 +140,6 @@ export default function SignIn(props: Props) {
     const validateInputs = () => {
         const email = document.getElementById('email') as HTMLInputElement;
         const password = document.getElementById('password') as HTMLInputElement;
-
         let isValid = true;
 
         if (!email.value || !/\S+@\S+\.\S+/.test(email.value)) {
@@ -105,91 +159,132 @@ export default function SignIn(props: Props) {
             setPasswordError(false);
             setPasswordErrorMessage('');
         }
-
         return isValid;
     };
 
     return (
-        <SignInContainer direction="column" justifyContent="space-between">
-            <Card variant="outlined">
+        <SignInContainer direction="column" justifyContent="center" alignItems="center">
+            <Stack spacing={2} alignItems="center" sx={{ mb: 3 }}>
+                <Sparkles size={28} color="#6ea8fe" />
                 <Typography
                     component="h1"
                     variant="h4"
-                    sx={{width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)'}}
+                    sx={{
+                        fontWeight: 900,
+                        letterSpacing: 0.2,
+                        textAlign: 'center',
+                        textShadow: '0 2px 20px rgba(25,118,210,0.35)',
+                        color: '#E5E7EB',
+                    }}
                 >
-                    Sign in
+                    Welcome back
                 </Typography>
+                <Typography sx={{ color: '#E5E7EB',  textAlign: 'center' }}>
+                    Sign in to continue to your quizzes
+                </Typography>
+            </Stack>
+
+            <Card variant="outlined">
                 <Box
                     component="form"
                     onSubmit={handleSubmit}
                     noValidate
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        width: '100%',
-                        gap: 2,
-                    }}
+                    sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 2.25 }}
                 >
                     <FormControl>
-                        <FormLabel htmlFor="email">Email</FormLabel>
+                        <FormLabel htmlFor="email" sx={{ color: '#E5E7EB' }}>Email</FormLabel>
                         <TextField
                             error={emailError}
                             helperText={emailErrorMessage}
                             id="email"
                             type="email"
                             name="email"
-                            placeholder="your@email.com"
+                            placeholder="you@example.com"
                             autoComplete="email"
-                            autoFocus
                             required
                             fullWidth
                             variant="outlined"
-                            color={emailError ? 'error' : 'primary'}
+                            color={emailError ? 'error' : 'secondary'}
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <Mail size={18} color = '#E5E7EB'/>
+                                    </InputAdornment>
+                                ),
+                            }}
+                            sx={(theme) => ({
+                                '& .MuiOutlinedInput-root': {
+                                    borderRadius: 14,
+                                    transition: 'box-shadow .18s ease, transform .18s ease',
+                                    '& fieldset': { borderColor: alpha(theme.palette.primary.main, 0.25) },
+                                    '&:hover fieldset': { borderColor: theme.palette.primary.main },
+                                    '&.Mui-focused': {
+                                        boxShadow: `0 0 0 4px ${alpha(theme.palette.primary.main, 0.15)}`,
+                                    },
+                                },
+                            })}
                         />
                     </FormControl>
+
                     <FormControl>
-                        <FormLabel htmlFor="password">Password</FormLabel>
+                        <FormLabel htmlFor="password" sx={{ color: '#E5E7EB' }}>Password</FormLabel>
                         <TextField
                             error={passwordError}
                             helperText={passwordErrorMessage}
                             name="password"
-                            placeholder="••••••"
+                            placeholder="••••••••"
                             type="password"
                             id="password"
                             autoComplete="current-password"
-                            autoFocus
                             required
                             fullWidth
                             variant="outlined"
                             color={passwordError ? 'error' : 'primary'}
+                            InputProps={{
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <Lock size={18} color = '#E5E7EB'/>
+                                    </InputAdornment>
+                                ),
+                            }}
+                            sx={(theme) => ({
+                                '& .MuiOutlinedInput-root': {
+                                    borderRadius: 14,
+                                    transition: 'box-shadow .18s ease, transform .18s ease',
+                                    '& fieldset': { borderColor: alpha(theme.palette.primary.main, 0.25) },
+                                    '&:hover fieldset': { borderColor: theme.palette.primary.main },
+                                    '&.Mui-focused': {
+                                        boxShadow: `0 0 0 4px ${alpha(theme.palette.primary.main, 0.15)}`,
+                                    },
+                                },
+                            })}
                         />
                     </FormControl>
-                    <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        onClick={validateInputs}
-                    >
+
+                    <PrimaryButton type="submit" fullWidth endIcon={<ArrowRight size={18} color = '#E5E7EB'/>} sx={{ color: '#E5E7EB' }}>
                         Sign in
-                    </Button>
+                    </PrimaryButton>
                 </Box>
-                <Divider>or</Divider>
-                <Box sx={{display: 'flex', flexDirection: 'column', gap: 2}}>
-                    <Button
+
+                <Divider sx={{ my: 1.5, opacity: 0.6, color: '#E5E7EB' }}>or</Divider>
+
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.25 }}>
+                    <OutlineButton
                         fullWidth
-                        variant="outlined"
-                        onClick={() => props.submitFn({email:"GOOGLE", password:""})}
-                        startIcon={<GoogleIcon/>}
+                        startIcon={<GoogleIcon />}
+                        onClick={() => props.submitFn({ email: 'GOOGLE', password: '' })}
                     >
                         Sign in with Google
-                    </Button>
-                    <Typography sx={{textAlign: 'center'}}>
+                    </OutlineButton>
+
+                    <Typography sx={{ textAlign: 'center', mt: 1, color: '#E5E7EB' }}>
                         Don&apos;t have an account?{' '}
-                        <NavLink to={Paths.REGISTER}>Sign up</NavLink>
+                        <NavLink to={Paths.REGISTER} style={{ color: '#6ea8fe', fontWeight: 700 }}>
+                            Sign up
+                        </NavLink>
                     </Typography>
                 </Box>
             </Card>
         </SignInContainer>
-
     );
 }

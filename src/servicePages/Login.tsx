@@ -3,7 +3,8 @@ import {useDispatch} from "react-redux";
 import {loginAction} from "../redux/slices/authSlice";
 import {useNavigate} from "react-router-dom";
 import type {LoginData} from "../utils/quiz-types.ts";
-import {login} from "../firebase/firebaseAuthService.ts";
+ import {login} from "../firebase/firebaseAuthService.ts";
+//import {login} from "../configurations/authApi.ts";
 
 const Login = () => {
     const dispatch = useDispatch();
@@ -32,7 +33,7 @@ const Login = () => {
     }
 
     return (
-        <div>
+        <div className={'login'}>
             <SignIn submitFn={loginWithFirebase} />
         </div>
     );

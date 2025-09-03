@@ -6,12 +6,14 @@ export enum Paths {
     LOGOUT = "/logout",
     USERSCORES = "/userscores",
     REGISTER = '/register',
+    ANATOMY = '/anatomy',
+    OPTIONS = '/options',
+    LECTURES = '/lectures'
 }
 export enum Roles {
-    ALL = 0,
-    AUTH = 1,
-    ADMIN = 2,
-    NO_AUTH = 3
+    USER = 'user',
+    ADMIN = 'admin',
+    SUPERVISOR = 'supervisor'
 }
 
 export type RouteType = {
@@ -40,8 +42,8 @@ export interface QuizQuestion {
     };
     answer: number;
     image?: string;
-    iframe?: string;
 }
+
 export type MultiLangString = {
     ru: string;
     he: string;

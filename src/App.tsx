@@ -1,5 +1,3 @@
-// import './App.css';
-// import './index.css';
 import {Route, Routes} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "./redux/hooks.ts";
 import PrivateRoute from "./redux/PrivateRoute.tsx";
@@ -42,7 +40,6 @@ function App() {
             }
         });
 
-        // Отписаться при размонтировании компонента
         return () => unsubscribe();
     }, [dispatch]);
 
@@ -50,7 +47,6 @@ function App() {
     // useEffect(() => {
     //     const token = localStorage.getItem('token');
     //     if (token) {
-    //         // дернуть /me на бэке, чтобы получить данные юзера
     //         fetch(`${API}/auth/me`, { headers: { Authorization: `Bearer ${token}` } })
     //             .then(res => res.json())
     //             .then(user => dispatch(loginAction({ ...user, isAuth: true })))

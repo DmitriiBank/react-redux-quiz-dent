@@ -22,11 +22,10 @@ export const ScoreTable = () => {
     const email = useAppSelector((state: RootState) => state.auth.email);
     const currentUserUid = useAppSelector((state: RootState) => state.auth.uid);
 
-    // Определяем админа на основе email
+
     const isAdmin = email ? ADMIN_EMAILS.has(email) : false;
 
     useEffect(() => {
-        // Небольшая задержка для инициализации auth данных
         const timer = setTimeout(() => {
             setInitialLoadDone(true);
         }, 100);
@@ -35,14 +34,11 @@ export const ScoreTable = () => {
     }, []);
 
     useEffect(() => {
-        // Ждем инициализации и наличия базовых данных
         if (!initialLoadDone) {
             return;
         }
 
-        // Если нет ни email ни uid, возможно еще загружается auth
         if (!email && !currentUserUid) {
-            // Даем еще немного времени на загрузку
             const timer = setTimeout(() => {
                 if (!email && !currentUserUid) {
                     setLoading(false);
@@ -56,7 +52,6 @@ export const ScoreTable = () => {
 
         if (isAdmin) {
             console.log("Загружаем данные для админа");
-            // Админ загружает всех пользователей
             sub = getAllStudentInfo().subscribe({
                 next: (users: User[]) => {
                     console.log("Получены данные админа:", users.length);
@@ -182,15 +177,14 @@ export const ScoreTable = () => {
 
     const handleEdit = (id: string) => {
         console.log("Редактировать", id);
-        // здесь можно открыть модалку с редактированием
+        // TODO  модалку с редактированием
     };
 
     const handleDelete = (id: string) => {
         console.log("Удалить", id);
-        // здесь запрос на удаление
+        //TODO запрос на удаление
     };
 
-    // Показываем сообщение о загрузке auth данных
     if (!initialLoadDone) {
         return (
             <Box sx={{ height: "100%", width: "100%", bgcolor: "background.paper", p: 2, borderRadius: 2 }}>
@@ -228,7 +222,6 @@ export const ScoreTable = () => {
                     pagination: {paginationModel: {pageSize: 10}},
                 }}
                 disableRowSelectionOnClick
-                // Для обычного пользователя скрываем пагинацию, если данных мало
                 hideFooter={!isAdmin && rows.length <= 1}
             />
         </Box>

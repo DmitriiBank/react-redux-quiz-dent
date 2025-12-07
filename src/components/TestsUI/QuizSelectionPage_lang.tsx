@@ -24,8 +24,6 @@ const QuizSelectionPageLang = () => {
         canTake: boolean,
         score?: string | null
     }>>({});
-    // const [loading, setLoading] = useState(false);
-    // const setLoading = useSelector((state: RootState) => state.auth.isLoading);
     const [quizzes, setQizzes] = useState<QuizData[]>([])
 
 

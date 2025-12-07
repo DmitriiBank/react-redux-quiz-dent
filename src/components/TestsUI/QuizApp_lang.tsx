@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import '../../styles/style.css';
+// import '../../styles/style.css';
 import type {QuizQuestion} from "../../utils/quiz-types.ts";
 import {ProgressBar} from "../progressBar/ProgressBar.tsx";
 import {AnswersList} from "./AnswersList.tsx";
@@ -9,6 +9,7 @@ import {useAppSelector} from '../../redux/hooks.ts';
 import type {RootState} from "../../redux/store.ts";
 import {canTakeTest, saveTestResult} from "../../firebase/firebaseDBService.ts";
 import {ImageItem} from "./ImageItem.tsx";
+import {CircularProgress} from "@mui/material";
 
 const QuizAppLang = ({questions}: {
     questions: QuizQuestion[],
@@ -19,6 +20,7 @@ const QuizAppLang = ({questions}: {
     const { uid, testList } = useAppSelector((state) => state.auth);
 
     const [current, setCurrent] = useState(0);
+    const [imgLoading, setImgLoading] = useState(true);
     const [score, setScore] = useState(0);
     const [selected, setSelected] = useState<number | null>(null);
     const [finished, setFinished] = useState(false);
@@ -26,10 +28,6 @@ const QuizAppLang = ({questions}: {
     const [saving, setSaving] = useState(false);
     const [canTake, setCanTake] = useState<boolean | null>(null);
     const [loading, setLoading] = useState(true);
-
-    // Получаем название теста из массива testList (закомментировано, если не используется)
-    // const currentTest = testList?.find(test => test.idTest === quizId);
-    // const testTitle = currentTest?.title || `${quizId}`;
 
     useEffect(() => {
         const checkTestAvailability = async () => {
@@ -66,7 +64,6 @@ const QuizAppLang = ({questions}: {
         if (current + 1 >= questions.length) {
             setFinished(true);
 
-            // Сохраняем результат в Firebase только для аутентифицированных пользователей
             if (uid && quizId) {
                 setSaving(true);
                 try {
@@ -81,6 +78,7 @@ const QuizAppLang = ({questions}: {
             }
         } else {
             setCurrent((prev) => prev + 1);
+            setImgLoading(true);
         }
 
         setSelected(null);
@@ -111,7 +109,7 @@ const QuizAppLang = ({questions}: {
                         )}
                     </div>
                     <button
-                        className="back-button"
+                        className="quiz-results__restart"
                         onClick={handleBackToSelection}
                     >
                         {lang === 'ru' ? 'Вернуться к выбору тестов' : 'חזרה לבחירת מבחנים'}
@@ -155,10 +153,10 @@ const QuizAppLang = ({questions}: {
 
     if (!q || !q.question) {
         return (
-            <div className="error-container">
+            <div className="quiz-error">
                 <h2>{lang === 'ru' ? 'Ошибка' : 'שגיאה'}</h2>
                 <p>{lang === 'ru' ? 'Некорректные данные вопроса' : 'נתוני שאלה שגויים'}</p>
-                <button className="back-button" onClick={handleBackToSelection}>
+                <button className="quiz-error__action" onClick={handleBackToSelection}>
                     {lang === 'ru' ? 'Вернуться назад' : 'חזרה'}
                 </button>
             </div>
@@ -166,12 +164,21 @@ const QuizAppLang = ({questions}: {
     }
 
     return (
-        <div className={"quiz-question-container"}>
-            <div className="question">
-                <div className="question-text">
+        <div className="quiz-session">
+            <div className="quiz-question">
+                <div className="quiz-question__title">
                     {q.question[lang]}
                 </div>
-                {q.image && <ImageItem image={q.image}/>}
+                {q.image && (
+                    <div className="quiz-question__media">
+                        {imgLoading && (
+                            <div className="quiz-question__image-loading">
+                                <CircularProgress size={32} color="inherit" />
+                            </div>
+                        )}
+                        <ImageItem image={q.image} onLoad={() => setImgLoading(false)} />
+                    </div>
+                )}
                 <AnswersList
                     options={q.options}
                     selected={selected}
@@ -180,7 +187,7 @@ const QuizAppLang = ({questions}: {
                 />
             </div>
             <button
-                className="next-button"
+                className="quiz-session__next"
                 onClick={handleNext}
                 disabled={selected === null}
             >
@@ -189,6 +196,9 @@ const QuizAppLang = ({questions}: {
                     : (lang === 'ru' ? 'Далее' : 'הבא')
                 }
             </button>
+            {saving && (
+                <div className="quiz-saving-indicator">Сохранение результата...</div>
+            )}
             <ProgressBar
                 currentQuestion={current + 1}
                 questionsLength={questions.length}

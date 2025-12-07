@@ -7,7 +7,7 @@ import {
 import {ADMIN_EMAILS} from "../../utils/User.ts";
 import {useMemo, useState} from "react";
 import quizzes from "../../configurations/quiz-config.json";
-import questions from "../../configurations/questions/lesson8.json"
+import questions from "../../configurations/questions/lesson7.json"
 
 
 export const Navbar = () => {
@@ -97,7 +97,7 @@ export const Navbar = () => {
                             console.log("isAdmin ", isAdmin);
                             try {
                                 setLoadingImport(true);
-                                await addQuestionsToQuiz("lesson8", questions.questions);
+                                await addQuestionsToQuiz("lesson7", questions.questions);
                                 alert('Импорт завершён');
                             } catch (e) {
                                 console.error(e);

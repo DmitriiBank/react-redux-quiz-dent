@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
 import type {QuizData} from '../../utils/quiz-types.ts';
 import QuizAppLang from "./QuizApp_lang.tsx";
-import '../../styles/style.css';
+import '../../styles/quiz.css';
 import type {RootState} from "../../redux/store.ts";
 import {useAppSelector} from "../../redux/hooks.ts";
 import {getQuizById} from "../../firebase/firebaseDBService.ts";
@@ -40,8 +40,8 @@ const QuizPageLang = () => {
     if (!quiz) return <p>Test not found</p>;
 
     return (
-        <div className="quiz-selection-container">
-            <h2>{quiz.title[lang]}: {quiz.description[lang]}</h2>
+        <div className="quiz-page">
+            <h2 className="quiz-page__title">{quiz.title[lang]}: {quiz.description[lang]}</h2>
             <QuizAppLang questions={quiz.questions ?? []}/>
 
         </div>

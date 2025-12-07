@@ -4,11 +4,13 @@ import {loginAction} from "../redux/slices/authSlice";
 import {useNavigate} from "react-router-dom";
 import type {LoginData} from "../utils/quiz-types.ts";
  import {login} from "../firebase/firebaseAuthService.ts";
+import {useState} from "react";
 //import {login} from "../configurations/authApi.ts";
 
 const Login = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const [error, setError] = useState<string | null>(null);
 
     const loginWithFirebase = async (loginData: LoginData) => {
         try {
@@ -28,13 +30,24 @@ const Login = () => {
             console.log('Redux action dispatched with uid:', userData.uid);
             navigate("/");
         } catch(err) {
-            console.error('Login error:', err);
+            if (err instanceof Error) {
+                if (err.message.includes("429")) {
+                    setError("Слишком много попыток входа 😿 Подожди минутку и попробуй снова.");
+                } else {
+                    setError("Ошибка авторизации. Проверь логин или пароль.");
+                }
+                console.error("Login error: ", err.message);
+                setError("Ошибка авторизации. Проверь логин или пароль.");
+            } else {
+                console.error("Неизвестная ошибка при входе:", err);
+                setError("Что-то пошло не так...");
+            }
         }
     }
 
     return (
         <div className={'login'}>
-            <SignIn submitFn={loginWithFirebase} />
+            <SignIn submitFn={loginWithFirebase} loginError={error}/>
         </div>
     );
 };

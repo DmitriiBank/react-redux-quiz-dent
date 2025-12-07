@@ -12,10 +12,13 @@ export const AnswersList = ({ options, onClick, selected, lang }: Props) => {
         return <div>Нет данных для вариантов ответа.</div>;
     }
     return (
-        <div className="options">
+        <div className="quiz-options">
             {options[lang].map((_, idx) => {
                 const isSelected = selected === idx;
-                const className = isSelected ? 'option selected' : 'option';
+                const className = ['quiz-option',
+                    isSelected ? 'quiz-option--selected' : undefined,]
+                    .filter(Boolean)
+                    .join(" ")
 
                 return (
                     <AnswerItem

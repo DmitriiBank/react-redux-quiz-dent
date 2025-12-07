@@ -38,20 +38,21 @@ export const Card = styled(MuiCard)(({ theme }) => ({
         theme.palette.mode === 'dark'
             ? '0 20px 60px rgba(0,0,0,0.45), inset 0 1px 0 rgba(21,26,33,0.04)'
             : '0 20px 60px rgba(25,118,210,0.20), inset 0 1px 0 rgba(255,255,255,0.5)',
-    [theme.breakpoints.up('sm')]: { maxWidth: 520 },
+    [theme.breakpoints.up('sm')]: {maxWidth: 520},
 }));
 
-type Props = { submitFn: (loginData: LoginData) => void };
+type Props = { submitFn: (loginData: LoginData) => void;  loginError?: string | null  };
 
-export const SignInContainer = styled(Stack)(({ theme }) => ({
+
+export const SignInContainer = styled(Stack)(({theme}) => ({
     position: 'relative',
-    minHeight: '350px',
-    minWidth: '450px',
+    maxHeight: '450px',
+    width: '100%',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     padding: theme.spacing(2),
-    [theme.breakpoints.up('sm')]: { padding: theme.spacing(4) },
+    [theme.breakpoints.up('sm')]: {padding: theme.spacing(4)},
     '&::before': {
         content: '""',
         position: 'fixed',
@@ -120,7 +121,7 @@ const OutlineButton = styled(Button)(({ theme }) => ({
     },
 }));
 
-export default function SignIn(props: Props) {
+export default function SignIn({submitFn, loginError}: Props) {
     const [emailError, setEmailError] = React.useState(false);
     const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
     const [passwordError, setPasswordError] = React.useState(false);
@@ -131,7 +132,7 @@ export default function SignIn(props: Props) {
         if (emailError || passwordError) return;
         if (!validateInputs()) return;
         const data = new FormData(event.currentTarget);
-        props.submitFn({
+       submitFn({
             email: data.get('email') as string,
             password: data.get('password') as string,
         });
@@ -261,6 +262,21 @@ export default function SignIn(props: Props) {
                         />
                     </FormControl>
 
+                    {loginError && (
+                        <div>
+                            <Typography
+                                sx={{
+                                    color: "red",
+                                    mt: 2,
+                                    textAlign: "center",
+                                    fontSize: 14
+                                }}
+                            >
+                                {loginError}
+                            </Typography>
+                        </div>
+                    )}
+
                     <PrimaryButton type="submit" fullWidth endIcon={<ArrowRight size={18} color = '#E5E7EB'/>} sx={{ color: '#E5E7EB' }}>
                         Sign in
                     </PrimaryButton>
@@ -272,7 +288,7 @@ export default function SignIn(props: Props) {
                     <OutlineButton
                         fullWidth
                         startIcon={<GoogleIcon />}
-                        onClick={() => props.submitFn({ email: 'GOOGLE', password: '' })}
+                        onClick={() => submitFn({ email: 'GOOGLE', password: '' })}
                     >
                         Sign in with Google
                     </OutlineButton>

@@ -46,7 +46,7 @@ type Props = { submitFn: (loginData: LoginData) => void;  loginError?: string | 
 
 export const SignInContainer = styled(Stack)(({theme}) => ({
     position: 'relative',
-    maxHeight: '450px',
+    minHeight: '350px',
     width: '100%',
     display: 'flex',
     justifyContent: 'center',
